@@ -1,0 +1,53 @@
+#!/bin/bash
+
+id=3000
+list="-a"
+users=("mscott" "jhalpert" "dschrute" "pbeesly" "abernard" "plapin" "shudson" "amartin" "omartinez" "kmalone" "dphilbin" "kkapoor" "tflenderson" "mpalmer" "cbratton")
+gecos=("Michael Scott" "Jim Halpert" "Dwight Schrute" "Pam Beesly" "Andy Bernard" "Phyllis Lapin" "Stanley Hudson" "Angela Martin" "Oscar Martinez" "Kevin Malone" "Darryl Philbin" "Kelly Kapoor" "Toby Flenderson" "Meredith Palmer" "Creed Bratton")
+index=0
+
+#Create DunderMifflin Employees
+machine="machinee.dundermifflin.com"
+host="`hostname`"
+if [ "$host" = "$machine" ]; then
+	for i in ${users[@]}; do
+		if [[ "$i" = "plapin" ]] || [[ "$i" = "shudson" ]] || [[ "$i" = "kmalone" ]] || [[ "$i" = "mpalmer" ]]; then 
+			groupadd -g $id $i
+			#change to lowercase m for other machines, (home directories already exist on machine e)
+			useradd -m -s /bin/bash -u $id -g $id -p "$(openssl passwd -1 password)" -c "${gecos[index]}" -d /home/$i $i
+			chown -R $i:$i /home/$i
+			chmod -R u=rwx,g=,o= /home/$i
+		else
+                        groupadd -g $id $i
+                        useradd -M -s /bin/bash -u $id -g $id -p "$(openssl passwd -1 password)" -c "${gecos[index]}" -d /home/$i $i
+			chown -R $i:$i /home/$i
+                        chmod -R u=rwx,g=,o= /home/$i
+		fi
+		((index+=1))
+		((id+=1))
+	done
+else
+	for i in ${users[@]}; do
+		groupadd -g $id $i
+                #change to lowercase m for other machines, (home directories already exist on machine e)
+                useradd -M -s /bin/bash -u $id -g $id -p "$(openssl passwd -1 password)" -c "${gecos[index]}" -d /home/$i $i
+                chown -R $i:$i /home/$i
+                chmod -R u=rwx,g=,o= /home/$i
+                ((index+=1))
+                ((id+=1))
+        done
+fi
+#Create Sys Admin
+groupadd -g 7777 loch1722
+useradd -m -s /bin/bash -u 7777 -g 7777 -p "$(openssl passwd -1 password)" -c "Logan Chayet" -d /home/loch1722 loch1722
+chown -R loch1722:loch1722 /home/loch1722
+chmod -R u=rwx,g=,o= /home/loch1722
+
+if [ "`type rpm`" ]; then
+        sudo usermod -aG wheel loch1722
+fi
+if [ "`type dpkg`" ]; then
+        sudo usermod -aG sudo loch1722
+fi
+
+

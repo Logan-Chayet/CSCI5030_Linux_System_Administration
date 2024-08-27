@@ -1,0 +1,42 @@
+#!/bin/bash
+
+managersG=("mscott" "jhalpert" "dschrute")
+salesG=("abernard" "plapin" "shudson")
+accountingG=("amartin" "omartinez" "kmalone")
+
+groupadd -g 6000 managers
+groupadd -g 6001 sales
+groupadd -g 6002 accounting
+
+
+for i in ${managersG[@]}; do
+        usermod -aG managers $i
+done
+for i in ${salesG[@]}; do
+        usermod -aG sales $i
+done
+for i in ${accountingG[@]}; do
+        usermod -aG accounting $i
+done
+
+machine="machinee.dundermifflin.com"
+host="`hostname`"
+if [ "$host" = "$machine" ]; then
+        mkdir /home/managers
+	mkdir /home/sales
+	mkdir /home/accounting
+
+	cp -r /etc/skel/. /home/managers
+	cp -r /etc/skel/. /home/sales
+	cp -r /etc/skel/. /home/accounting
+
+	chown :managers /home/managers
+	chown :sales /home/sales
+	chown :accounting /home/accounting
+
+	chmod -R u=rwx,g=rwx,o= /home/managers
+	chmod -R u=rwx,g=rwx,o= /home/sales
+	chmod -R u=rwx,g=rwx,o= /home/accounting
+fi
+
+umask 007

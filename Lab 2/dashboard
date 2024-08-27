@@ -1,0 +1,81 @@
+#!bin/bash
+
+#var=`uptime | awk '{print $1}'`
+
+up=`uptime | sed 's/up .*//'`
+printf "Uptime:${up}\n"
+
+CPUload=`uptime | sed 's/.*average: //'`
+printf "CPU Load Average: ${CPUload}\n"
+
+freeRam=`free | grep Mem: | awk '{print $4}'`
+printf "Free RAM: ${freeRam} MB\n"
+
+usedSwap=`free | grep Swap: | awk '{print $3}'`
+printf "Swap used: ${usedSwap} MB\n"
+
+printf "\n"
+
+printf "Interface Address\n"
+
+loAddr=`ip addr | grep lo: | awk '{print $2}'`
+loIP=`ip addr | grep "inet " | grep host | awk '{print $2}'`
+if [ $loAddr ]; then
+	printf "${loAddr}    	  ${loIP}\n"
+fi
+
+ens192Addr=`ip addr | grep ens192: | awk '{print $2}'`
+ens192IP=`ip addr | grep "inet " | grep ens192 | awk '{print $2}'`
+ens224Addr=`ip addr | grep ens224: | awk '{print $2}'`
+ens224IP=`ip addr | grep "inet " | grep ens224 | awk '{print $2}'`
+ens256Addr=`ip addr | grep ens256: | awk '{print $2}'`
+ens256IP=`ip addr | grep "inet " | grep ens256 | awk '{print $2}'`
+if [ $ens192Addr ]; then
+        printf "${ens192Addr}   ${ens192IP}\n"
+fi
+if [ $ens224Addr ]; then
+        printf "${ens224Addr}   ${ens224IP}\n"
+fi
+if [ $ens256Addr ]; then
+        printf "${ens256Addr}   ${ens256IP}\n"
+fi
+ping=`ping -c 1 8.8.8.8`
+if [ -n "$ping" ]; then
+	printf "Internet Connectivity: Yes\n"
+else
+	printf "Internet Connectivity: No\n"
+fi
+
+printf "\n"
+
+printf "User Accounts\n"
+
+totalUsers=`cat /etc/passwd | wc -l`
+printf "Total users: ${totalUsers}\n"
+
+activeUsers=`cat /etc/passwd | grep -v nologin | wc -l`
+printf "Active users: ${activeUsers}\n"
+
+printf "\n"
+
+printf "Shells        Users\n"
+
+binBash=`cat /etc/passwd | grep /bin/bash | wc -l`
+binFalse=`cat /etc/passwd | grep /bin/false | wc -l`
+binSh=`cat /etc/passwd | grep /bin/sh | wc -l`
+binSync=`cat /etc/passwd | grep /bin/sync | wc -l`
+printf "/bin/bash         ${binBash}\n"
+printf "/bin/false        ${binFalse}\n"
+printf "/bin/sh           ${binSh}\n"
+printf "/bin/bashsync     ${binSync}\n"
+
+printf "\n"
+
+printf "Filesystem /boot\n"
+
+numD=`find /boot -mindepth 1 -type d | wc -l`
+numF=`find /boot -mindepth 1 -type f | wc -l`
+numL=`find /boot -mindepth 1 -type l | wc -l`
+printf "Total number of Files:	     ${numF}\n"
+printf "Total number of Links:       ${numL}\n"
+printf "Total number of Directories: ${numD}\n"

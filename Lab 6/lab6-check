@@ -1,0 +1,60 @@
+#!/bin/bash
+
+users=("mscott" "jhalpert" "dschrute" "pbeesly" "abernard" "plapin" "shudson" "amartin" "omartinez" "kmalone" "dphilbin" "kkapoor" "tflenderson" "mpalmer" "cbratton")
+machines=("100.64.0.12" "100.64.12.2" "100.64.12.3" "100.64.12.4" "100.64.12.6")
+letter=("A" "B" "C" "D" "F")
+index=0
+
+for i in ${machines[@]}; do
+	printf "Machine ${letter[index]}\n"
+	for j in ${users[@]}; do
+		sshpass -p password ssh $j@$i true 2>/dev/null
+		x=`echo $?`
+		if [[ "$i" = 100.64.0.12 ]] || [[ "$i" = 100.64.12.2 ]];then
+			if [[ "$j" = mscott ]] || [[ "$j" = dschrute ]];then
+				if [ "$x" -eq 0 ];then
+					printf "     1 ${j} should be able to login\n"
+				else
+					printf "     0 ${j} should be able to login\n"
+				fi
+			else
+				if [ "$x" -ne 0 ];then
+                                        printf "     1 ${j} should NOT be able to login\n"
+                                else
+                                        printf "     0 ${j} should NOT be able to login\n"
+                                fi
+			fi
+		fi
+                if [[ "$i" = 100.64.12.3 ]] || [[ "$i" = 100.64.12.4 ]];then
+                        if [[ "$j" = mscott ]] || [[ "$j" = dschrute ]] || [[ "$j" = pbeesly ]] || [[ "$j" = abernard ]] || [[ "$j" = kkapoor ]];then
+                                if [ "$x" -eq 0 ];then
+                                        printf "     1 ${j} should be able to login\n"
+                                else
+                                        printf "     0 ${j} should be able to login\n"
+                                fi
+                        else
+                                if [ "$x" -ne 0 ];then
+                                        printf "     1 ${j} should NOT be able to login\n"
+                                else
+                                        printf "     0 ${j} should NOT be able to login\n"
+                                fi
+                        fi
+                fi
+                if [ "$i" = 100.64.12.6 ];then
+                        if [[ "$j" = mscott ]] || [[ "$j" = dschrute ]] || [[ "$j" = amartin ]] || [[ "$j" = omartinez ]] || [[ "$j" = kmalone ]];then
+                                if [ "$x" -eq 0 ];then
+                                        printf "     1 ${j} should be able to login\n"
+                                else
+                                        printf "     0 ${j} should be able to login\n"
+                                fi
+                        else
+                                if [ "$x" -ne 0 ];then
+                                        printf "     1 ${j} should NOT be able to login\n"
+                                else
+                                        printf "     0 ${j} should NOT be able to login\n"
+                                fi
+                        fi
+                fi
+	done
+	((index+=1))
+done

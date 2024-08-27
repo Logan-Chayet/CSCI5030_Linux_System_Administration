@@ -1,0 +1,7 @@
+ssh-copy-id root@100.64.0.12
+ssh-copy-id root@100.64.12.2
+ssh-copy-id root@100.64.12.3
+ssh-copy-id root@100.64.12.4
+ssh-copy-id root@100.64.12.6
+ssh-copy-id root@100.64.12.7
+

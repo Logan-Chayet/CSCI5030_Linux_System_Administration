@@ -1,0 +1,6 @@
+#!/bin/bash
+
+users=("mscott" "jhalpert" "dschrute" "pbeesly" "abernard" "plapin" "shudson" "amartin" "omartinez" "kmalone" "dphilbin" "kkapoor" "tflenderson" "mpalmer" "cbratton")
+for i in ${users[@]}; do
+        userdel $i
+done
